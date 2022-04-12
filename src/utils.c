@@ -10,7 +10,9 @@
 int split_string(char *str, char *dlm,char *arr[])
 {
     int idx = 0;
-    char *token = strtok(str, dlm);
+    char tmp[SIZE];
+    strcpy(tmp,str);
+    char *token = strtok(tmp, dlm);
 
     while (token != NULL)
     {

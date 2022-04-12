@@ -1,35 +1,13 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "utils.h"
+#include "tables.h"
 #define SIZE 1000
 
 int main(int argc, char *argv[])
 {
     int sts = 0;
-    printf("\n");
-    printf("\033[0;33m"); // yellow color
-
-    printf("There are following commands:\n");
-
-    printf("\033[0m"); // default colour
-
-    printf("\033[0;36m"); // cyan color
-    printf("      1> create db\n");
-    printf("      2> create table\n");
-    printf("      3> insert fields\n");
-    printf("      4> insert values\n");
-    printf("      5> insert fields\n");
-    printf("      6> fetch\n");
-    printf("      7> update db\n");
-    printf("      8> update table\n");
-    printf("      9> update values\n");
-    printf("      10> delete db\n");
-    printf("      11> delete table\n");
-    printf("      12> delete values\n");
-    printf("      13> exit\n");
-    printf("\033[0m"); // default colour
-    printf("\n");
-
     for (;;)
     {
         printf("\033[0;32m"); // green colour

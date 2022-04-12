@@ -11,5 +11,7 @@ typedef struct table Table;
 int create_table_struct(char *db_name,char *table_name,char *fields[],int num_of_fields,Table *table);
 void free_table_struct(Table *table);
 void print_table_struct(Table *table);
+int get_all_fields_table(char *db_name,char *table_name,char *fields[]);
+void reflect_table(char *db_name,char *table_name,Table *table);
 int is_id_exists(Table *table,int id);
 int update_values(Table *table,int id,char *vals[],int no_of_vals);
