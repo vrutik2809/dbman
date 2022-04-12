@@ -16,7 +16,7 @@ int split_string(char *str, char *dlm,char *arr[])
 
     while (token != NULL)
     {
-        arr[idx] = (char *)malloc(strlen(token) * sizeof(char *));
+        arr[idx] = (char *)malloc(strlen(token) * sizeof(char));
         strcpy(arr[idx++],token);
         token = strtok(NULL, dlm);
     }

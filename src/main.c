@@ -17,10 +17,10 @@ int main(int argc, char *argv[])
         fgets(cmd_str, SIZE, stdin);
         cmd_str[strlen(cmd_str) - 1] = '\0';
         char *cmd_arr[SIZE];
-        int idx = split_string(cmd_str, " ", cmd_arr);
+        int cmd_length = split_string(cmd_str, " ", cmd_arr);
         if (strcmp(cmd_arr[0], "create") == 0)
         {
-            if (idx == 1)
+            if (cmd_length == 1)
             {
                 printf("command not found\n");
             }
@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
         }
         else if (strcmp(cmd_arr[0], "insert") == 0)
         {
-            if (idx == 1)
+            if (cmd_length == 1)
             {
                 printf("command not found\n");
             }
@@ -62,21 +62,27 @@ int main(int argc, char *argv[])
         }
         else if (strcmp(cmd_arr[0], "update") == 0)
         {
-            if (idx == 1)
+            if (cmd_length == 1)
             {
                 printf("command not found\n");
             }
             else if (strcmp(cmd_arr[1], "db") == 0)
             {
-                // update db logic
+                if(update_db(cmd_arr,cmd_length)){
+                    printf("database updated successfully\n");
+                }
             }
             else if (strcmp(cmd_arr[1], "table") == 0)
             {
-                // update table logic
+                if(update_table(cmd_arr,cmd_length)){
+                    printf("table updated successfully\n");
+                }
             }
             else if (strcmp(cmd_arr[1], "values") == 0)
             {
-                // update values logic
+                if(update_values(cmd_arr,cmd_length)){
+                    printf("row updated successfully\n");
+                }
             }
             else
             {
@@ -85,7 +91,7 @@ int main(int argc, char *argv[])
         }
         else if (strcmp(cmd_arr[0], "delete") == 0)
         {
-            if (idx == 1)
+            if (cmd_length == 1)
             {
                 printf("command not found\n");
             }
@@ -106,6 +112,10 @@ int main(int argc, char *argv[])
                 printf("command not found\n");
             }
         }
+        else if (strcmp(cmd_arr[0], "clear") == 0)
+        {
+            system("clear");
+        }
         else if (strcmp(cmd_arr[0], "exit") == 0)
         {
             sts = 1;
@@ -115,7 +125,7 @@ int main(int argc, char *argv[])
             printf("command not found\n");
         }
 
-        free_str_arr(cmd_arr, idx);
+        free_str_arr(cmd_arr, cmd_length);
         if (sts)
         {
             break;
