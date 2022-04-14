@@ -8,6 +8,9 @@
 int main(int argc, char *argv[])
 {
     int sts = 0;
+    printf("\n");
+    printf("To see the available features type help in command line\n");
+    printf("\n");
     for (;;)
     {
         printf("\033[0;32m"); // green colour
@@ -18,7 +21,14 @@ int main(int argc, char *argv[])
         cmd_str[strlen(cmd_str) - 1] = '\0';
         char *cmd_arr[SIZE];
         int cmd_length = split_string(cmd_str, " ", cmd_arr);
-        if (strcmp(cmd_arr[0], "create") == 0)
+
+        // help to display the availbale features
+        if (strcmp(cmd_arr[0], "help") == 0)
+        {
+
+            help();
+        }
+        else if (strcmp(cmd_arr[0], "create") == 0)
         {
             if (cmd_length == 1)
             {
@@ -68,19 +78,22 @@ int main(int argc, char *argv[])
             }
             else if (strcmp(cmd_arr[1], "db") == 0)
             {
-                if(update_db(cmd_arr,cmd_length)){
+                if (update_db(cmd_arr, cmd_length))
+                {
                     printf("database updated successfully\n");
                 }
             }
             else if (strcmp(cmd_arr[1], "table") == 0)
             {
-                if(update_table(cmd_arr,cmd_length)){
+                if (update_table(cmd_arr, cmd_length))
+                {
                     printf("table updated successfully\n");
                 }
             }
             else if (strcmp(cmd_arr[1], "values") == 0)
             {
-                if(update_values(cmd_arr,cmd_length)){
+                if (update_values(cmd_arr, cmd_length))
+                {
                     printf("row updated successfully\n");
                 }
             }
@@ -97,15 +110,31 @@ int main(int argc, char *argv[])
             }
             else if (strcmp(cmd_arr[1], "db") == 0)
             {
-                // delete db logic
+                // delete db 
+
+                if(delete_db(cmd_arr,cmd_length))
+                {
+                    printf("Database deleted successfully\n");
+                }
             }
             else if (strcmp(cmd_arr[1], "table") == 0)
             {
-                // delete table logic
+                // delete table 
+
+                if(delete_table(cmd_arr,cmd_length))
+                {
+                    printf("Table deleted successfully\n");
+                }
             }
             else if (strcmp(cmd_arr[1], "values") == 0)
             {
-                // delete values logic
+                // delete values 
+
+
+                if(delete_values(cmd_arr,cmd_length))
+                {
+                    printf("Successfully Deleted all values specified by ids\n");
+                }
             }
             else
             {
