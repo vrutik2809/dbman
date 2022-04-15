@@ -155,7 +155,6 @@ int main(int argc, char *argv[])
         }
 
         free_str_arr(cmd_arr, cmd_length);
-        
         if (sts)
         {
             break;
