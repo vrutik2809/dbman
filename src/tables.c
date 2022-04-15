@@ -5,6 +5,7 @@
 #include "tables.h"
 
 #define SIZE 1000
+const int siz = 100000;
 
 int create_table_struct(char *db_name, char *table_name, char *fields[], int num_of_fields, Table *table)
 {
@@ -313,7 +314,7 @@ int delete_values(char *cmd_arr[], int cmd_length)
 {
     /*
         cmd_arr[0] = delete
-        cmd_arr[1] = db
+        cmd_arr[1] = values
         cmd_arr[2] = db_name
         cmd_arr[3] = table_name
         cmd_arr[4]......cmd_arr[n] = id
@@ -333,5 +334,85 @@ int delete_values(char *cmd_arr[], int cmd_length)
     {
         printf("provide id\n");
         return 0;
+    }
+    char original_table[SIZE];
+    make_table_path(cmd_arr[2], cmd_arr[3], original_table);
+    char temp_table[SIZE];
+    make_table_path(cmd_arr[2], "temp", temp_table);
+
+    FILE *src = fopen(original_table, "r");
+    FILE *new_file = fopen(temp_table, "a");
+
+    char *file_content = (char *)malloc(SIZE * sizeof(char));
+
+    int cnt = 0;
+
+    int first_cnt = 0;
+    // to check which id is missing
+    int arr[siz];
+
+    memset(arr, 0, siz);
+    while (fgets(file_content, SIZE, src))
+    {
+        // ignore the first row;
+        if (first_cnt == 0)
+        {
+            fputs(file_content, new_file);
+            first_cnt++;
+            continue;
+        }
+
+        char *row[SIZE];
+        int idx = split_string(file_content, ",", row);
+
+        // traverse to through all the ids
+
+        int ok = 1;
+        for (int i = 4; i < cmd_length; i++)
+        {
+            if (atoi(row[0]) == atoi(cmd_arr[i]))
+            {
+                arr[atoi(cmd_arr[i])] = 1;
+                cnt++;
+                ok = 0;
+                break;
+            }
+        }
+
+        if (ok)
+        {
+            fputs(file_content, new_file);
+        }
+
+        free_str_arr(row, idx);
+    }
+    free(file_content);
+    fclose(src);
+    fclose(new_file);
+
+    if (cmd_length - 4 != cnt)
+    {
+
+        remove(temp_table);
+
+        printf("Following ids are not exist in the table\n");
+
+        for (int i = 4; i < cmd_length; i++)
+        {
+            if (arr[atoi(cmd_arr[i])] == 0)
+            {
+                printf("%d\n", atoi(cmd_arr[i]));
+            }
+        }
+        memset(arr, 0, siz);
+
+        return 0;
+    }
+    else
+    {
+        remove(original_table);
+        rename(temp_table, original_table);
+         memset(arr,0,siz);
+        return 1;
     }
 }
