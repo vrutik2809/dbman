@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include<unistd.h> 
+#include <unistd.h>
 #include "utils.h"
 
 #define DATA_PATH "../data/"
@@ -99,8 +99,6 @@ int delete_db_path(char *db_name)
     strcpy(temp, DATA_PATH);
     strcat(temp, db_name);
 
-   
-
     int check = rmdir(temp);
 
     if (!check)
@@ -125,7 +123,6 @@ int delete_table_path(char *db_name, char *table_name)
     strcat(temp, table_name);
     strcat(temp, ".csv");
 
-    
     if (remove(temp) == 0)
     {
         free(temp);
@@ -137,6 +134,8 @@ int delete_table_path(char *db_name, char *table_name)
         return 0;
     }
 }
+
+
 void help()
 {
     printf("\n");
