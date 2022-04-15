@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <dirent.h>
 #include "utils.h"
 
 #define DATA_PATH "../data/"
@@ -90,29 +91,6 @@ void make_table_path(char *db_name, char *table_name, char *table_path)
     strcpy(table_path, temp);
     free(temp);
 }
-
-int delete_db_path(char *db_name)
-{
-
-    int size = strlen(DATA_PATH) + strlen(db_name);
-    char *temp = (char *)malloc(sizeof(char) * size);
-    strcpy(temp, DATA_PATH);
-    strcat(temp, db_name);
-
-    int check = rmdir(temp);
-
-    if (!check)
-    {
-        free(temp);
-        return 1;
-    }
-    else
-    {
-        free(temp);
-        return 0;
-    }
-}
-
 int delete_table_path(char *db_name, char *table_name)
 {
     int size = strlen(DATA_PATH) + strlen(db_name) + strlen(table_name);
@@ -135,6 +113,70 @@ int delete_table_path(char *db_name, char *table_name)
     }
 }
 
+int remove_db(char *db_name)
+{
+    DIR *d = opendir(db_name);
+
+    size_t path_len = strlen(db_name);
+
+    int r = -1;
+
+    if (d)
+    {
+        struct dirent *p;
+
+        r = 0;
+
+        while (!r && (p = readdir(d)))
+        {
+            int r2 = -1;
+
+            char *buf;
+            size_t len;
+
+            // we can skip the "." and ".." as we don't want to recurse on them
+
+            if (!strcmp(p->d_name, ".") || !strcmp(p->d_name, ".."))
+            {
+                continue;
+            }
+
+            len = path_len + strlen(p->d_name) + 2;
+
+            buf = malloc(len);
+
+            if (buf)
+            {
+                struct stat statbuf;
+
+                snprintf(buf, len, "%s/%s", db_name, p->d_name);
+
+                if (!stat(buf, &statbuf))
+                {
+                    if (S_ISDIR(statbuf.st_mode))
+                    {
+                        r2 = remove_db(buf);
+                    }
+                    else
+                    {
+                        r2 = unlink(buf);
+                    }
+                }
+
+                free(buf);
+            }
+            r = r2;
+        }
+        closedir(d);
+    }
+
+    if (!r)
+    {
+        r = rmdir(db_name);
+    }
+
+    return !r;
+}
 
 void help()
 {
