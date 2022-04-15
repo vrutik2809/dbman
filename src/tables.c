@@ -278,9 +278,11 @@ int delete_db(char *cmd_arr[], int cmd_length)
     }
     char db_path[SIZE];
     make_db_path(cmd_arr[2], db_path);
-    int check = remove_db(db_path);
-   
-    return check;
+
+    char str[SIZE] = "rm -R ";
+    int check = system(strcat(str, db_path));
+
+    return check == -1 ? 0 : 1;
 }
 
 int delete_table(char *cmd_arr[], int cmd_length)
