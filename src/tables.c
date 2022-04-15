@@ -5,6 +5,7 @@
 #include "tables.h"
 
 #define SIZE 1000
+const int siz = 100000;
 
 int create_table_struct(char *db_name, char *table_name, char *fields[], int num_of_fields, Table *table)
 {
@@ -96,7 +97,8 @@ int is_id_exists(Table *table, int id)
     return sts;
 }
 
-int update_values_helper(Table *table,int id,int no_of_vals,char *vals[]){
+int update_values_helper(Table *table, int id, int no_of_vals, char *vals[])
+{
     char temp_table[SIZE];
     make_table_path(table->db_name, "temp", temp_table);
     rename(table->path, temp_table);
@@ -177,7 +179,7 @@ int update_values(char *cmd_arr[], int cmd_length)
 
     int no_of_vals = cmd_length - 4;
     int id = atoi(cmd_arr[4]);
-    int sts = update_values_helper(table,id,no_of_vals,&cmd_arr[4]);
+    int sts = update_values_helper(table, id, no_of_vals, &cmd_arr[4]);
     if (!sts)
     {
         printf("id %d doesn't exist in table %s.%s\n", id, table->db_name, table->name);
@@ -187,59 +189,234 @@ int update_values(char *cmd_arr[], int cmd_length)
     return 1;
 }
 
-int update_table(char *cmd_arr[],int cmd_length){
+int update_table(char *cmd_arr[], int cmd_length)
+{
     /*
     - db_name = cmd_arr[2]
     - old_table_name = cmd_arr[3]
     - new_table_name = cmd_arr[4]
     */
 
-    if(cmd_length == 2){
+    if (cmd_length == 2)
+    {
         printf("provide database name\n");
         return 0;
     }
-    else if(cmd_length == 3){
+    else if (cmd_length == 3)
+    {
         printf("provide old table name\n");
         return 0;
     }
-    else if(cmd_length == 4){
+    else if (cmd_length == 4)
+    {
         printf("provide new table name\n");
         return 0;
     }
-    if(!is_table_exists_and_valid(cmd_arr[2],cmd_arr[3])){
+    if (!is_table_exists_and_valid(cmd_arr[2], cmd_arr[3]))
+    {
         printf("table %s.%s doesn't exist\n", cmd_arr[2], cmd_arr[3]);
         return 0;
     }
     char old_table_path[SIZE];
-    make_table_path(cmd_arr[2],cmd_arr[3],old_table_path);
+    make_table_path(cmd_arr[2], cmd_arr[3], old_table_path);
     char new_table_path[SIZE];
-    make_table_path(cmd_arr[2],cmd_arr[4],new_table_path);
-    rename(old_table_path,new_table_path);
+    make_table_path(cmd_arr[2], cmd_arr[4], new_table_path);
+    rename(old_table_path, new_table_path);
     return 1;
 }
 
-int update_db(char *cmd_arr[],int cmd_length){
+int update_db(char *cmd_arr[], int cmd_length)
+{
     /*
     - old_db_name = cmd_arr[2]
     - new_db_name = cmd_arr[3]
     */
 
-    if(cmd_length == 2){
+    if (cmd_length == 2)
+    {
         printf("provide old database name\n");
         return 0;
     }
-    else if(cmd_length == 3){
+    else if (cmd_length == 3)
+    {
         printf("provide new database name\n");
         return 0;
     }
-    if(!is_db_exists_and_valid(cmd_arr[2])){
+    if (!is_db_exists_and_valid(cmd_arr[2]))
+    {
         printf("database %s doesn't exist\n", cmd_arr[2]);
         return 0;
     }
     char old_db_path[SIZE];
-    make_db_path(cmd_arr[2],old_db_path);
+    make_db_path(cmd_arr[2], old_db_path);
     char new_db_path[SIZE];
-    make_db_path(cmd_arr[3],new_db_path);
-    rename(old_db_path,new_db_path);
+    make_db_path(cmd_arr[3], new_db_path);
+    rename(old_db_path, new_db_path);
     return 1;
+}
+
+// delete functionality
+
+int delete_db(char *cmd_arr[], int cmd_length)
+{
+    /*
+         cmd_arr[0] = delete
+         cmd_arr[1] = db
+         cmd_arr[2] = db_name
+    */
+
+    if (cmd_length == 2)
+    {
+        printf("Provide Database Name\n");
+        return 0;
+    }
+
+    if (!is_db_exists_and_valid(cmd_arr[2]))
+    {
+        printf("database %s doesn't exist\n", cmd_arr[2]);
+        return 0;
+    }
+    char db_path[SIZE];
+    make_db_path(cmd_arr[2], db_path);
+
+    char str[SIZE] = "rm -R ";
+    int check = system(strcat(str, db_path));
+
+    return check == -1 ? 0 : 1;
+}
+
+int delete_table(char *cmd_arr[], int cmd_length)
+{
+    /*
+        cmd_arr[0] = delete
+        cmd_arr[1] = table
+        cmd_arr[2] = db_name
+        cmd_arr[3] = table_name
+   */
+    if (cmd_length == 2)
+    {
+        printf("provide database name\n");
+        return 0;
+    }
+    else if (cmd_length == 3)
+    {
+        printf("provide table name\n");
+        return 0;
+    }
+    if (!is_table_exists_and_valid(cmd_arr[2], cmd_arr[3]))
+    {
+        printf("table %s.%s doesn't exist\n", cmd_arr[2], cmd_arr[3]);
+        return 0;
+    }
+
+    int check = delete_table_path(cmd_arr[2], cmd_arr[3]);
+
+    return check;
+}
+
+int delete_values(char *cmd_arr[], int cmd_length)
+{
+    /*
+        cmd_arr[0] = delete
+        cmd_arr[1] = values
+        cmd_arr[2] = db_name
+        cmd_arr[3] = table_name
+        cmd_arr[4]......cmd_arr[n] = id
+    */
+
+    if (cmd_length == 2)
+    {
+        printf("provide database name\n");
+        return 0;
+    }
+    else if (cmd_length == 3)
+    {
+        printf("provide table name\n");
+        return 0;
+    }
+    else if (cmd_length == 4)
+    {
+        printf("provide id\n");
+        return 0;
+    }
+    char original_table[SIZE];
+    make_table_path(cmd_arr[2], cmd_arr[3], original_table);
+    char temp_table[SIZE];
+    make_table_path(cmd_arr[2], "temp", temp_table);
+
+    FILE *src = fopen(original_table, "r");
+    FILE *new_file = fopen(temp_table, "a");
+
+    char *file_content = (char *)malloc(SIZE * sizeof(char));
+
+    int cnt = 0;
+
+    int first_cnt = 0;
+    // to check which id is missing
+    int arr[siz];
+
+    memset(arr, 0, siz);
+    while (fgets(file_content, SIZE, src))
+    {
+        // ignore the first row;
+        if (first_cnt == 0)
+        {
+            fputs(file_content, new_file);
+            first_cnt++;
+            continue;
+        }
+
+        char *row[SIZE];
+        int idx = split_string(file_content, ",", row);
+
+        // traverse to through all the ids
+
+        int ok = 1;
+        for (int i = 4; i < cmd_length; i++)
+        {
+            if (atoi(row[0]) == atoi(cmd_arr[i]))
+            {
+                arr[atoi(cmd_arr[i])] = 1;
+                cnt++;
+                ok = 0;
+                break;
+            }
+        }
+
+        if (ok)
+        {
+            fputs(file_content, new_file);
+        }
+
+        free_str_arr(row, idx);
+    }
+    free(file_content);
+    fclose(src);
+    fclose(new_file);
+
+    if (cmd_length - 4 != cnt)
+    {
+
+        remove(temp_table);
+
+        printf("Following ids are not exist in the table\n");
+
+        for (int i = 4; i < cmd_length; i++)
+        {
+            if (arr[atoi(cmd_arr[i])] == 0)
+            {
+                printf("%d\n", atoi(cmd_arr[i]));
+            }
+        }
+        memset(arr, 0, siz);
+
+        return 0;
+    }
+    else
+    {
+        remove(original_table);
+        rename(temp_table, original_table);
+        memset(arr, 0, siz);
+        return 1;
+    }
 }
