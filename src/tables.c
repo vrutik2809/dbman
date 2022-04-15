@@ -276,8 +276,10 @@ int delete_db(char *cmd_arr[], int cmd_length)
         printf("database %s doesn't exist\n", cmd_arr[2]);
         return 0;
     }
-
-    int check = delete_db_path(cmd_arr[2]);
+    char db_path[SIZE];
+    make_db_path(cmd_arr[2], db_path);
+    int check = remove_db(db_path);
+   
     return check;
 }
 
@@ -412,7 +414,7 @@ int delete_values(char *cmd_arr[], int cmd_length)
     {
         remove(original_table);
         rename(temp_table, original_table);
-         memset(arr,0,siz);
+        memset(arr, 0, siz);
         return 1;
     }
 }
