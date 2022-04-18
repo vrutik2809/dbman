@@ -4,7 +4,6 @@
 #include "utils.h"
 #include "tables.h"
 
-#define SIZE 1000
 const int siz = 100000;
 
 int create_table_struct(char *db_name, char *table_name, char *fields[], int num_of_fields, Table *table)
@@ -255,8 +254,6 @@ int update_db(char *cmd_arr[], int cmd_length)
     return 1;
 }
 
-// delete functionality
-
 int delete_db(char *cmd_arr[], int cmd_length)
 {
     /*
@@ -419,4 +416,52 @@ int delete_values(char *cmd_arr[], int cmd_length)
         memset(arr, 0, siz);
         return 1;
     }
+}
+
+void display_table(char *cmd_arr[], int cmd_length){
+
+    /*
+    - cmd_arr[1] = db_name
+    - cmd_arr[2] = table_name
+    */
+
+    if(cmd_length == 1){
+        printf("provide database name\n");
+        return;
+    }
+    else if(cmd_length == 2){
+        printf("provide table name\n");
+        return;
+    }
+    else if(!is_table_exists_and_valid(cmd_arr[1],cmd_arr[2])){
+        printf("table %s.%s doesn't exist\n",cmd_arr[0],cmd_arr[1]);
+        return;
+    }
+    char table_path[SIZE];
+    make_table_path(cmd_arr[1],cmd_arr[2],table_path);
+    FILE *src = fopen(table_path,"r");
+    char *file_content = (char *)malloc(SIZE * sizeof(char));
+    int line_no = 0;
+    int last_len = 0;
+    while(fgets(file_content,SIZE,src)){
+        if(line_no == 0){
+            char *header[SIZE];
+            int header_len = split_string(file_content,",",header);
+            last_len = ID_LEN + (header_len - 1) * COL_LEN;
+            header[header_len-1][strlen(header[header_len-1]) - 1] = '\0';
+            print_csv_header(header,header_len);
+        }
+        else{
+            char *row[SIZE];
+            int row_len = split_string(file_content,",",row);
+            row[row_len-1][strlen(row[row_len-1]) - 1] = '\0';
+            print_csv_row(row,row_len);
+        }
+        line_no++;
+    }
+    for (int i = 0; i < last_len; i++)
+    {
+        printf("-");
+    }
+    printf("\n");
 }

@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include "utils.h"
 #include "tables.h"
-#define SIZE 1000
 
 int main(int argc, char *argv[])
 {
@@ -46,6 +45,10 @@ int main(int argc, char *argv[])
             {
                 printf("command not found\n");
             }
+        }
+        else if(strcmp(cmd_arr[0], "display") == 0)
+        {
+            display_table(cmd_arr,cmd_length);
         }
         else if (strcmp(cmd_arr[0], "insert") == 0)
         {

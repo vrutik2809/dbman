@@ -18,10 +18,7 @@ int update_values_helper(Table *table,int id,int no_of_vals,char *vals[]);
 int update_values(char *cmd_arr[], int cmd_length);
 int update_table(char *cmd_arr[],int cmd_length);
 int update_db(char *cmd_arr[],int cmd_length);
-
-
-// delete functionaly
-
 int delete_db(char *cmd_arr[],int cmd_length); // delete the given database
 int delete_table(char *cmd_arr[],int cmd_length); // delete the given table
 int delete_values(char *cmd_arr[],int cmd_length); // delete all the values specified by the id
+void display_table(char *cmd_arr[], int cmd_length);

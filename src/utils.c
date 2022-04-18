@@ -7,9 +7,6 @@
 #include <dirent.h>
 #include "utils.h"
 
-#define DATA_PATH "../data/"
-#define SIZE 1000
-
 int split_string(char *str, char *dlm, char *arr[])
 {
     int idx = 0;
@@ -91,6 +88,7 @@ void make_table_path(char *db_name, char *table_name, char *table_path)
     strcpy(table_path, temp);
     free(temp);
 }
+
 int delete_table_path(char *db_name, char *table_name)
 {
     int size = strlen(DATA_PATH) + strlen(db_name) + strlen(table_name);
@@ -112,7 +110,6 @@ int delete_table_path(char *db_name, char *table_name)
         return 0;
     }
 }
-
 
 void help()
 {
@@ -138,5 +135,58 @@ void help()
     printf(" \u2022 exit\n");
 
     printf("\033[0m"); // default colour
+    printf("\n");
+}
+
+void print_csv_header(char *header[], int len)
+{
+    // printf("\033[0;34m"); // blue colour
+    int header_length = ID_LEN + (len - 1) * COL_LEN;
+    for (int i = 0; i < header_length; i++)
+    {
+        printf("-");
+    }
+    printf("\n");
+    printf("| id  |");
+    for (int i = 1; i < len; i++)
+    {
+        int left_margin = (COL_LEN - strlen(header[i])) / 2;
+        int right_margin = (COL_LEN - strlen(header[i])) % 2 == 0 ? left_margin : left_margin +  1;
+        for (int j = 0; j < left_margin; j++)
+        {
+            printf(" ");
+        }
+        printf("%s", header[i]);
+        for (int j = 0; j < right_margin; j++)
+        {
+            printf(j == right_margin - 1 ? "|" : " ");
+        }
+    }
+    printf("\n");
+    for (int i = 0; i < header_length; i++)
+    {
+        printf("-");
+    }
+    printf("\n");
+    // printf("\033[0m"); // default colour
+}
+
+void print_csv_row(char *row[], int row_len){
+    printf("|");
+    for (int i = 0; i < row_len; i++)
+    {
+        int current_col_len = i == 0 ? ID_LEN - 1 : COL_LEN;
+        int left_margin = (current_col_len - strlen(row[i])) / 2;
+        int right_margin = (current_col_len - strlen(row[i])) % 2 == 0 ? left_margin : left_margin +  1;
+        for (int j = 0; j < left_margin; j++)
+        {
+            printf(" ");
+        }
+        printf("%s", row[i]);
+        for (int j = 0; j < right_margin; j++)
+        {
+            printf(j == right_margin - 1 ? "|" : " ");
+        }
+    }
     printf("\n");
 }
