@@ -8,4 +8,4 @@ int delete_table_path(char *db_name,char *table_name);
 void make_db_path(char *db_name,char *db_path);
 
 
-void help(); // to display all the available features
+void man(); // to display all the available features

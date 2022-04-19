@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 {
     int sts = 0;
     printf("\n");
-    printf("To see the available features type help in command line\n");
+    printf("To see the available features type man in command line\n");
     printf("\n");
     for (;;)
     {
@@ -23,10 +23,10 @@ int main(int argc, char *argv[])
         int cmd_length = split_string(cmd_str, " ", cmd_arr);
 
         // help to display the availbale features
-        if (strcmp(cmd_arr[0], "help") == 0)
+        if (strcmp(cmd_arr[0], "man") == 0)
         {
 
-            help();
+            man();
         }
         else if (strcmp(cmd_arr[0], "create") == 0)
         {

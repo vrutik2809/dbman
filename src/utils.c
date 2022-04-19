@@ -114,16 +114,14 @@ int delete_table_path(char *db_name, char *table_name)
 }
 
 
-void help()
+void man()
 {
     printf("\n");
-    printf("\033[0;31m"); // red colour
+   
     printf("There are following commands:\n");
-    printf("\033[0m"); // default colour
-
-    printf("\033[0;33m"); // yellow colour
-
+   
     printf(" \u2022 create Database\n");
+    
     printf(" \u2022 create table\n");
     printf(" \u2022 insert fields\n");
     printf(" \u2022 insert values\n");
