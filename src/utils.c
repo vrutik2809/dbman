@@ -111,30 +111,54 @@ int delete_table_path(char *db_name, char *table_name)
     }
 }
 
-void help()
+void man()
 {
     printf("\n");
-    printf("\033[0;31m"); // red colour
-    printf("There are following commands:\n");
-    printf("\033[0m"); // default colour
 
-    printf("\033[0;33m"); // yellow colour
+    printf("There are following commands:\n");
 
     printf(" \u2022 create Database\n");
-    printf(" \u2022 create table\n");
-    printf(" \u2022 insert fields\n");
-    printf(" \u2022 insert values\n");
-    printf(" \u2022 insert fields\n");
-    printf(" \u2022 fetch\n");
-    printf(" \u2022 update Database\n");
-    printf(" \u2022 update table\n");
-    printf(" \u2022 update values\n");
-    printf(" \u2022 delete Database\n");
-    printf(" \u2022 delete table\n");
-    printf(" \u2022 delete values\n");
-    printf(" \u2022 exit\n");
+    printf("\t[cmd : create db <db_name> ]\n");
 
-    printf("\033[0m"); // default colour
+    printf(" \u2022 create table\n");
+    printf("\t[cmd : create table <db_name> <table_name_1> <table_name_2> ..  ]\n");
+
+    printf(" \u2022 insert fields\n");
+    printf("\t[cmd : insert fields <db_name> <table_name> <field_1> <field_2> ... ]\n");
+
+    printf(" \u2022 insert values\n");
+    printf("\t[cmd : insert values <db_name> <table_name> <val_1> <val_2> ... ]\n");
+
+    printf(" \u2022 insert values\n");
+    printf("\t[cmd : insert values <db_name> <table_name_1> <csv_file_name_1> <table_name_2> <csv_file_name_2> ... ]\n");
+
+    printf(" \u2022 fetch\n");
+    printf("\t[cmd : fetch <db_name> <table_name> <id_1> <id_2> ... ]\n");
+
+    printf(" \u2022 update Database\n");
+    printf("\t[cmd : update db <db_name_old> <db_name_new> ]\n");
+
+    printf(" \u2022 update table\n");
+    printf("\t[cmd : update table <db_name> <table_name_old> <table_name_new> ]\n");
+
+    printf(" \u2022 update values\n");
+    printf("\t[cmd : update values <db_name> <table_name> <id> <val_1> <val_2> ]\n");
+
+    printf(" \u2022 delete Database\n");
+    printf("\t[cmd : delete db <db_name> ]\n");
+
+    printf(" \u2022 delete table\n");
+    printf("\t[cmd : delete table <db_name> <table_name> ]\n");
+
+    printf(" \u2022 delete values\n");
+    printf("\t[cmd : delete values <db_name> <table_name> <id_1> <id_2> ... ]\n");
+
+    printf(" \u2022 display table\n");
+    printf("\t[cmd : display <db_name> <table_name> ]\n");
+
+    printf(" \u2022 exit\n");
+    printf("\t[cmd : exit ]\n");
+
     printf("\n");
 }
 
@@ -151,7 +175,7 @@ void print_csv_header(char *header[], int len)
     for (int i = 1; i < len; i++)
     {
         int left_margin = (COL_LEN - strlen(header[i])) / 2;
-        int right_margin = (COL_LEN - strlen(header[i])) % 2 == 0 ? left_margin : left_margin +  1;
+        int right_margin = (COL_LEN - strlen(header[i])) % 2 == 0 ? left_margin : left_margin + 1;
         for (int j = 0; j < left_margin; j++)
         {
             printf(" ");
@@ -171,13 +195,14 @@ void print_csv_header(char *header[], int len)
     // printf("\033[0m"); // default colour
 }
 
-void print_csv_row(char *row[], int row_len){
+void print_csv_row(char *row[], int row_len)
+{
     printf("|");
     for (int i = 0; i < row_len; i++)
     {
         int current_col_len = i == 0 ? ID_LEN - 1 : COL_LEN;
         int left_margin = (current_col_len - strlen(row[i])) / 2;
-        int right_margin = (current_col_len - strlen(row[i])) % 2 == 0 ? left_margin : left_margin +  1;
+        int right_margin = (current_col_len - strlen(row[i])) % 2 == 0 ? left_margin : left_margin + 1;
         for (int j = 0; j < left_margin; j++)
         {
             printf(" ");
