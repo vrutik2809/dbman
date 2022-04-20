@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
         if (strcmp(cmd_arr[0], "help") == 0)
         {
 
-            help();
+            man();
         }
         else if (strcmp(cmd_arr[0], "create") == 0)
         {
