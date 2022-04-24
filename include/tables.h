@@ -2,7 +2,7 @@ struct table{
     char name[100]; // table name
     char db_name[100]; // database name
     char path[100]; // database path
-    int num_of_fields; // total numbe of fields
+    int num_of_fields; // total number of fields
     char *fields[100]; // fields name
 };
 
@@ -22,3 +22,15 @@ int delete_db(char *cmd_arr[],int cmd_length); // delete the given database
 int delete_table(char *cmd_arr[],int cmd_length); // delete the given table
 int delete_values(char *cmd_arr[],int cmd_length); // delete all the values specified by the id
 void display_table(char *cmd_arr[], int cmd_length);
+
+
+// fetch
+
+
+int fetch(char *cmd_arr[],int cmd_length);
+
+// create db and table
+
+
+int create_db(char *cmd_arr[],int cmd_length);
+int create_table(char *cmd_arr[],int cmd_length);

@@ -117,6 +117,8 @@ void man()
 
     printf("There are following commands:\n");
 
+    
+
     printf(" \u2022 create Database\n");
     printf("\t[cmd : create db <db_name> ]\n");
 

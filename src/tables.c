@@ -300,6 +300,11 @@ int delete_table(char *cmd_arr[], int cmd_length)
         printf("provide table name\n");
         return 0;
     }
+    if (!is_db_exists_and_valid(cmd_arr[2]))
+    {
+        printf("database %s doesn't exist\n", cmd_arr[2]);
+        return 0;
+    }
     if (!is_table_exists_and_valid(cmd_arr[2], cmd_arr[3]))
     {
         printf("table %s.%s doesn't exist\n", cmd_arr[2], cmd_arr[3]);
@@ -334,6 +339,18 @@ int delete_values(char *cmd_arr[], int cmd_length)
     else if (cmd_length == 4)
     {
         printf("provide id\n");
+        return 0;
+    }
+
+    if (!is_db_exists_and_valid(cmd_arr[2]))
+    {
+        printf("database %s doesn't exist\n", cmd_arr[2]);
+        return 0;
+    }
+
+    if (!is_table_exists_and_valid(cmd_arr[2], cmd_arr[3]))
+    {
+        printf("table %s.%s doesn't exist\n", cmd_arr[2], cmd_arr[3]);
         return 0;
     }
     char original_table[SIZE];
@@ -417,45 +434,51 @@ int delete_values(char *cmd_arr[], int cmd_length)
         return 1;
     }
 }
-
-void display_table(char *cmd_arr[], int cmd_length){
+void display_table(char *cmd_arr[], int cmd_length)
+{
 
     /*
     - cmd_arr[1] = db_name
     - cmd_arr[2] = table_name
     */
 
-    if(cmd_length == 1){
+    if (cmd_length == 1)
+    {
         printf("provide database name\n");
         return;
     }
-    else if(cmd_length == 2){
+    else if (cmd_length == 2)
+    {
         printf("provide table name\n");
         return;
     }
-    else if(!is_table_exists_and_valid(cmd_arr[1],cmd_arr[2])){
-        printf("table %s.%s doesn't exist\n",cmd_arr[0],cmd_arr[1]);
+    else if (!is_table_exists_and_valid(cmd_arr[1], cmd_arr[2]))
+    {
+        printf("table %s.%s doesn't exist\n", cmd_arr[0], cmd_arr[1]);
         return;
     }
     char table_path[SIZE];
-    make_table_path(cmd_arr[1],cmd_arr[2],table_path);
-    FILE *src = fopen(table_path,"r");
+    make_table_path(cmd_arr[1], cmd_arr[2], table_path);
+    FILE *src = fopen(table_path, "r");
     char *file_content = (char *)malloc(SIZE * sizeof(char));
     int line_no = 0;
     int last_len = 0;
-    while(fgets(file_content,SIZE,src)){
-        if(line_no == 0){
+    while (fgets(file_content, SIZE, src))
+    {
+        if (line_no == 0)
+        {
             char *header[SIZE];
-            int header_len = split_string(file_content,",",header);
+            int header_len = split_string(file_content, ",", header);
             last_len = ID_LEN + (header_len - 1) * COL_LEN;
-            header[header_len-1][strlen(header[header_len-1]) - 1] = '\0';
-            print_csv_header(header,header_len);
+            header[header_len - 1][strlen(header[header_len - 1]) - 1] = '\0';
+            print_csv_header(header, header_len);
         }
-        else{
+        else
+        {
             char *row[SIZE];
-            int row_len = split_string(file_content,",",row);
-            row[row_len-1][strlen(row[row_len-1]) - 1] = '\0';
-            print_csv_row(row,row_len);
+            int row_len = split_string(file_content, ",", row);
+            row[row_len - 1][strlen(row[row_len - 1]) - 1] = '\0';
+            print_csv_row(row, row_len);
         }
         line_no++;
     }
@@ -464,4 +487,197 @@ void display_table(char *cmd_arr[], int cmd_length){
         printf("-");
     }
     printf("\n");
+}
+
+// fetch command
+
+int fetch(char *cmd_arr[], int cmd_length)
+{
+    /*
+        cmd_arr[0] = fetch
+        cmd_arr[1] = db_name
+        cmd_arr[2] = table name
+        cmd_arr[3]......cmd_arr[n] = id
+
+    */
+
+    if (cmd_length == 1)
+    {
+        printf("provide database name\n");
+        return 0;
+    }
+    else if (cmd_length == 2)
+    {
+        printf("provide table name\n");
+        return 0;
+    }
+    else if (cmd_length == 3)
+    {
+        printf("provide id\n");
+        return 0;
+    }
+
+    if (!is_db_exists_and_valid(cmd_arr[1]))
+    {
+        printf("database %s doesn't exist\n", cmd_arr[1]);
+        return 0;
+    }
+
+    if (!is_table_exists_and_valid(cmd_arr[1], cmd_arr[2]))
+    {
+        printf("table %s.%s doesn't exist\n", cmd_arr[1], cmd_arr[2]);
+        return 0;
+    }
+
+    int cnt = 0;
+
+    Table *table = (Table *)malloc(sizeof(Table));
+    int st;
+    reflect_table(cmd_arr[1], cmd_arr[2], table, &st);
+    int ok = 0, ok1 = 0;
+    for (int i = 3; i < cmd_length; i++)
+    {
+        if (is_id_exists(table, atoi(cmd_arr[i])))
+        {
+
+            continue;
+        }
+        else if (ok1 == 0)
+        {
+            printf("Following ids are not exist in the table\n");
+            printf("%d\n", atoi(cmd_arr[i]));
+            ok1 = 1;
+        }
+        else
+        {
+            printf("%d\n", atoi(cmd_arr[i]));
+            ok = 1;
+        }
+    }
+
+    free_table_struct(table);
+    if (ok == 1 || ok1 == 1)
+    {
+        return 0;
+    }
+
+    char original_table[SIZE];
+    make_table_path(cmd_arr[1], cmd_arr[2], original_table);
+
+    FILE *src = fopen(original_table, "r");
+
+    char *file_content = (char *)malloc(SIZE * sizeof(char));
+
+    int first_cnt = 0;
+    printf("\n");
+    while (fgets(file_content, SIZE, src))
+    {
+        // the first row;
+        char *row[SIZE];
+        int idx = split_string(file_content, ",", row);
+        if (first_cnt == 0)
+        {
+
+            print_csv_header(row, idx);
+            first_cnt++;
+            continue;
+        }
+
+        // traverse to through all the ids
+
+        int ok = 0;
+        for (int i = 3; i < cmd_length; i++)
+        {
+            if (atoi(row[0]) == atoi(cmd_arr[i]))
+            {
+
+                ok = 1;
+                break;
+            }
+        }
+
+        if (ok)
+        {
+
+            print_csv_row(row, idx);
+        }
+
+        free_str_arr(row, idx);
+    }
+    free(file_content);
+    fclose(src);
+
+    printf("\n");
+
+    return 1;
+}
+
+// create functionality
+
+int create_db(char *cmd_arr[], int cmd_length)
+{
+    /*
+        cmd_arr[0] = create
+        cmd_arr[1] = db
+        cmd_arr[2] = db_name
+    */
+
+    if (cmd_length == 2)
+    {
+        printf("provide database name\n");
+        return 0;
+    }
+    if (is_db_exists_and_valid(cmd_arr[2]))
+    {
+        printf("database %s is already exist\n", cmd_arr[2]);
+        return 0;
+    }
+    char db_path[SIZE];
+    make_db_path(cmd_arr[2], db_path);
+
+    char str[SIZE] = "mkdir ";
+    int check = system(strcat(str, db_path));
+
+    return check == -1 ? 0 : 1;
+}
+
+int create_table(char *cmd_arr[], int cmd_length)
+{
+
+    /*
+        cmd_arr[0] = create
+        cmd_arr[1] = table
+        cmd_arr[2] = db_name
+        cmd_arr[3] = table_name
+    */
+
+    if (cmd_length == 2)
+    {
+        printf("provide database name\n");
+        return 0;
+    }
+
+    if (cmd_length == 3)
+    {
+        printf("provide table name\n");
+        return 0;
+    }
+    if (!is_db_exists_and_valid(cmd_arr[2]))
+    {
+        printf("database %s doesn't exist\n", cmd_arr[2]);
+        return 0;
+    }
+
+    if (is_table_exists_and_valid(cmd_arr[2], cmd_arr[3]))
+    {
+        printf("table %s.%s is already exist\n", cmd_arr[2], cmd_arr[3]);
+        return 0;
+    }
+    char table_path[SIZE] = "";
+    make_table_path(cmd_arr[2], cmd_arr[3], table_path);
+
+    char str[SIZE] = "touch ";
+    int check = system(strcat(str, table_path));
+
+    return check == -1 ? 0 : 1;
 }
