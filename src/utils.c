@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <unistd.h>
-#include <dirent.h>
 #include "utils.h"
 
 int split_string(char *str, char *dlm, char *arr[])
@@ -66,6 +64,11 @@ int is_table_exists_and_valid(char *db_name, char *table_name)
         return 0;
 }
 
+int is_file_exists(char *file_name){
+    struct stat st;
+    return stat(file_name,&st) == 0 ? 1: 0; 
+}
+
 void make_db_path(char *db_name, char *db_path)
 {
     int size = strlen(DATA_PATH) + strlen(db_name);
@@ -121,7 +124,7 @@ void man()
     printf("\t[cmd : create db <db_name> ]\n");
 
     printf(" \u2022 create table\n");
-    printf("\t[cmd : create table <db_name> <table_name_1> <table_name_2> ..  ]\n");
+    printf("\t[cmd : create table <db_name> <table_name>]\n");
 
     printf(" \u2022 insert fields\n");
     printf("\t[cmd : insert fields <db_name> <table_name> <field_1> <field_2> ... ]\n");
@@ -129,7 +132,7 @@ void man()
     printf(" \u2022 insert values\n");
     printf("\t[cmd : insert values <db_name> <table_name> <val_1> <val_2> ... ]\n");
 
-    printf(" \u2022 insert values\n");
+    printf(" \u2022 insert values async\n");
     printf("\t[cmd : insert values <db_name> <table_name_1> <csv_file_name_1> <table_name_2> <csv_file_name_2> ... ]\n");
 
     printf(" \u2022 fetch\n");

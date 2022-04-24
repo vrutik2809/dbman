@@ -34,19 +34,16 @@ int main(int argc, char *argv[])
             }
             else if (strcmp(cmd_arr[1], "db") == 0)
             {
-                // create db logic
-
                 if (create_db(cmd_arr, cmd_length))
                 {
-                    printf("database successfully created\n");
+                    printf("database created successfully\n");
                 }
             }
             else if (strcmp(cmd_arr[1], "table") == 0)
             {
-                // create table logic
                 if (create_table(cmd_arr, cmd_length))
                 {
-                    printf("table successfully created\n");
+                    printf("table created successfully\n");
                 }
             }
             else
@@ -66,11 +63,19 @@ int main(int argc, char *argv[])
             }
             else if (strcmp(cmd_arr[1], "fields") == 0)
             {
-                // insert field logic
+                if(insert_fields(cmd_arr,cmd_length)){
+                    printf("fields added successfully\n");
+                }
+            }
+            else if (cmd_length >= 3 && strcmp(cmd_arr[1], "values") == 0 && strcmp(cmd_arr[2],"async") == 0)
+            {
+                insert_values_async(cmd_arr,cmd_length);
             }
             else if (strcmp(cmd_arr[1], "values") == 0)
             {
-                // insert value logic
+                if(insert_values(cmd_arr,cmd_length)){
+                    printf("values added successfully\n");
+                }
             }
             else
             {
@@ -79,8 +84,6 @@ int main(int argc, char *argv[])
         }
         else if (strcmp(cmd_arr[0], "fetch") == 0)
         {
-            // fetch logic
-
             if (fetch(cmd_arr, cmd_length) == 1)
             {
                 continue;
@@ -126,8 +129,6 @@ int main(int argc, char *argv[])
             }
             else if (strcmp(cmd_arr[1], "db") == 0)
             {
-                // delete db
-
                 if (delete_db(cmd_arr, cmd_length))
                 {
                     printf("Database deleted successfully\n");
@@ -135,7 +136,6 @@ int main(int argc, char *argv[])
             }
             else if (strcmp(cmd_arr[1], "table") == 0)
             {
-                // delete table
 
                 if (delete_table(cmd_arr, cmd_length))
                 {
@@ -144,8 +144,6 @@ int main(int argc, char *argv[])
             }
             else if (strcmp(cmd_arr[1], "values") == 0)
             {
-                // delete values
-
                 if (delete_values(cmd_arr, cmd_length))
                 {
                     printf("Successfully Deleted all values specified by ids\n");
