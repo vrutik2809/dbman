@@ -175,7 +175,7 @@ void print_csv_header(char *header[], int len)
     for (int i = 1; i < len; i++)
     {
         int left_margin = (COL_LEN - strlen(header[i])) / 2;
-        int right_margin = (COL_LEN - strlen(header[i])) % 2 == 0 ? left_margin : left_margin +  1;
+        int right_margin = (COL_LEN - strlen(header[i])) % 2 == 0 ? left_margin : left_margin + 1;
         for (int j = 0; j < left_margin; j++)
         {
             printf(" ");
@@ -195,13 +195,14 @@ void print_csv_header(char *header[], int len)
     // printf("\033[0m"); // default colour
 }
 
-void print_csv_row(char *row[], int row_len){
+void print_csv_row(char *row[], int row_len)
+{
     printf("|");
     for (int i = 0; i < row_len; i++)
     {
         int current_col_len = i == 0 ? ID_LEN - 1 : COL_LEN;
         int left_margin = (current_col_len - strlen(row[i])) / 2;
-        int right_margin = (current_col_len - strlen(row[i])) % 2 == 0 ? left_margin : left_margin +  1;
+        int right_margin = (current_col_len - strlen(row[i])) % 2 == 0 ? left_margin : left_margin + 1;
         for (int j = 0; j < left_margin; j++)
         {
             printf(" ");

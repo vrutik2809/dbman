@@ -35,19 +35,28 @@ int main(int argc, char *argv[])
             else if (strcmp(cmd_arr[1], "db") == 0)
             {
                 // create db logic
+
+                if (create_db(cmd_arr, cmd_length))
+                {
+                    printf("database successfully created\n");
+                }
             }
             else if (strcmp(cmd_arr[1], "table") == 0)
             {
                 // create table logic
+                if (create_table(cmd_arr, cmd_length))
+                {
+                    printf("table successfully created\n");
+                }
             }
             else
             {
                 printf("command not found\n");
             }
         }
-        else if(strcmp(cmd_arr[0], "display") == 0)
+        else if (strcmp(cmd_arr[0], "display") == 0)
         {
-            display_table(cmd_arr,cmd_length);
+            display_table(cmd_arr, cmd_length);
         }
         else if (strcmp(cmd_arr[0], "insert") == 0)
         {
@@ -71,6 +80,11 @@ int main(int argc, char *argv[])
         else if (strcmp(cmd_arr[0], "fetch") == 0)
         {
             // fetch logic
+
+            if (fetch(cmd_arr, cmd_length) == 1)
+            {
+                continue;
+            }
         }
         else if (strcmp(cmd_arr[0], "update") == 0)
         {
@@ -112,28 +126,27 @@ int main(int argc, char *argv[])
             }
             else if (strcmp(cmd_arr[1], "db") == 0)
             {
-                // delete db 
+                // delete db
 
-                if(delete_db(cmd_arr,cmd_length))
+                if (delete_db(cmd_arr, cmd_length))
                 {
                     printf("Database deleted successfully\n");
                 }
             }
             else if (strcmp(cmd_arr[1], "table") == 0)
             {
-                // delete table 
+                // delete table
 
-                if(delete_table(cmd_arr,cmd_length))
+                if (delete_table(cmd_arr, cmd_length))
                 {
                     printf("Table deleted successfully\n");
                 }
             }
             else if (strcmp(cmd_arr[1], "values") == 0)
             {
-                // delete values 
+                // delete values
 
-
-                if(delete_values(cmd_arr,cmd_length))
+                if (delete_values(cmd_arr, cmd_length))
                 {
                     printf("Successfully Deleted all values specified by ids\n");
                 }
