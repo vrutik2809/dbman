@@ -838,23 +838,36 @@ int insert_values_async_helper(char *db_name, char *table_name, char *csv_file_n
     }
     char table_path[SIZE] = "";
     make_table_path(db_name, table_name, table_path);
-    int id = get_last_id_from_table(table_path) + 1;  
+    int id = get_last_id_from_table(table_path) + 1;
+    Table *table = (Table *) malloc(sizeof(Table));
+    reflect_table(db_name,table_name,table);
     FILE *table_dest = fopen(table_path, "a");
     FILE *csv_src = fopen(csv_file_name,"r");
     char *file_content = (char *)malloc(SIZE * sizeof(char));
+    int sts = 1;
     while (fgets(file_content, SIZE, csv_src))
     {
+        if(sts){
+            char *fields[SIZE];
+            int num_of_fields = split_string(file_content,",",fields);
+            if(table->num_of_fields - 1!= num_of_fields){
+                sts = 0;
+                break;
+            }
+            free_str_arr(fields,num_of_fields);
+        }
         char line_buff[2 * SIZE] = "";
         sprintf(line_buff,"%d",id++);
         strcat(line_buff,",");
         strcat(line_buff,file_content);
         fputs(line_buff,table_dest);
     }
+    free_table_struct(table); 
     fputs("\n",table_dest);
     fclose(table_dest);
     fclose(csv_src);
     free(file_content);
-    return 1;
+    return sts? 1:-2;
 }
 
 int insert_values_async(char *cmd_arr[], int cmd_length)
@@ -900,6 +913,10 @@ int insert_values_async(char *cmd_arr[], int cmd_length)
             }
             else if(sts == -1){
                 printf("csv file %s doesn't exist\n",cmd_arr[5 + 2 * i]);
+                exit(-1);
+            }
+            else if(sts == -2){
+                printf("no of fields in csv file %s is not same as table %s\n",cmd_arr[5 + 2 * i],cmd_arr[4 + 2 * i]);
                 exit(-1);
             }
             exit(0);
