@@ -174,10 +174,7 @@ void print_csv_header(char *header[], int len)
         printf("-");
     }
     printf("\n");
-
-    // printf("hello\n");
-    printf("| hello1223 |");
-    // printf("| id  |");
+    printf("| id  |");
 
     for (int i = 1; i < len; i++)
     {
