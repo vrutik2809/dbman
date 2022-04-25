@@ -610,6 +610,7 @@ int fetch(char *cmd_arr[], int cmd_length)
     }
     free(file_content);
     fclose(src);
+    printf("\n");
 
     if (ok)
     {
@@ -679,6 +680,11 @@ int create_table(char *cmd_arr[], int cmd_length)
         return 0;
     }
 
+    if(!is_db_exists_and_valid(cmd_arr[2])){
+        printf("database %s doesn't exist\n", cmd_arr[2]);
+        return 0;
+    }
+
     if (is_table_exists_and_valid(cmd_arr[2], cmd_arr[3]))
     {
         printf("table %s.%s is already exist\n", cmd_arr[2], cmd_arr[3]);
@@ -716,9 +722,18 @@ int insert_fields(char *cmd_arr[], int cmd_length)
         printf("table %s.%s doesn't exist\n", cmd_arr[2], cmd_arr[3]);
         return 0;
     }
+    else if(cmd_length == 4){
+        printf("provide atleast one field\n");
+        return 0;
+    }
 
     char table_path[SIZE];
     make_table_path(cmd_arr[2], cmd_arr[3], table_path);
+
+    if(!is_file_empty(table_path)){
+        printf("table %s.%s already initialized\n", cmd_arr[2], cmd_arr[3]);
+        return 0;
+    }
 
     if (strcmp(cmd_arr[4], "id") == 0)
     {
@@ -730,9 +745,9 @@ int insert_fields(char *cmd_arr[], int cmd_length)
     }
     else
     {
-        FILE *src = fopen(table_path, "a");
-        fputs("id,", src);
+        FILE *src = fopen(table_path, "w");
         char header[SIZE] = "";
+        strcat(header,"id,");
         join_string(&cmd_arr[4], cmd_length - 4, ",", header);
         fputs(header, src);
         fclose(src);
@@ -782,9 +797,7 @@ int insert_values(char *cmd_arr[], int cmd_length)
     }
     char table_path[SIZE];
     make_table_path(cmd_arr[2], cmd_arr[3], table_path);
-    struct stat st;
-    stat(table_path, &st);
-    if (st.st_size == 0)
+    if (is_file_empty(table_path))
     {
         printf("table %s.%s is not initialized\n", cmd_arr[2], cmd_arr[3]);
         printf("use `insert fields` command to initialize the table\n");

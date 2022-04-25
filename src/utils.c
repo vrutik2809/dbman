@@ -64,9 +64,15 @@ int is_table_exists_and_valid(char *db_name, char *table_name)
         return 0;
 }
 
-int is_file_exists(char *file_name){
+int is_file_exists(char *file_path){
     struct stat st;
-    return stat(file_name,&st) == 0 ? 1: 0; 
+    return stat(file_path,&st) == 0 ? 1: 0; 
+}
+
+int is_file_empty(char *file_path){
+    struct stat st;
+    stat(file_path, &st);
+    return st.st_size == 0 ? 1:0;
 }
 
 void make_db_path(char *db_name, char *db_path)
