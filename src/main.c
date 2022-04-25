@@ -149,7 +149,8 @@ int main(int argc, char *argv[])
 
                 if (delete_values(cmd_arr, cmd_length))
                 {
-                    printf("Successfully Deleted all values specified by ids\n");
+                    // printf("Successfully Deleted all values specified by ids\n");
+                    continue;
                 }
             }
             else
