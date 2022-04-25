@@ -532,9 +532,8 @@ int fetch(char *cmd_arr[], int cmd_length)
     int cnt = 0;
 
     Table *table = (Table *)malloc(sizeof(Table));
-<<<<<<< HEAD
-    int st;
-    reflect_table(cmd_arr[1], cmd_arr[2], table, &st);
+   
+    reflect_table(cmd_arr[1], cmd_arr[2], table);
     int ok = 0;
 
     int arr[siz];
@@ -543,19 +542,12 @@ int fetch(char *cmd_arr[], int cmd_length)
 
 
     int anyone_present = 0;
-=======
-    reflect_table(cmd_arr[1], cmd_arr[2], table);
-    int ok = 0, ok1 = 0;
->>>>>>> 5651b0f5f47e2ce46178f660fd60ebc191ef751e
     for (int i = 3; i < cmd_length; i++)
     {
         if (is_id_exists(table, atoi(cmd_arr[i])))
         {
-<<<<<<< HEAD
             arr[atoi(cmd_arr[i])] = 1;
             anyone_present = 1;
-=======
->>>>>>> 5651b0f5f47e2ce46178f660fd60ebc191ef751e
             continue;
         }
         else
@@ -631,6 +623,9 @@ int fetch(char *cmd_arr[], int cmd_length)
             }
         }
     }
+
+
+    printf("\n");
 
     return 1;
 }
