@@ -362,6 +362,8 @@ int delete_values(char *cmd_arr[], int cmd_length)
     // to check which id is missing
     int arr[siz];
 
+    int id_present = 0;
+
     memset(arr, 0, siz);
     while (fgets(file_content, SIZE, src))
     {
@@ -392,7 +394,12 @@ int delete_values(char *cmd_arr[], int cmd_length)
 
         if (ok)
         {
+
             fputs(file_content, new_file);
+        }
+        else
+        {
+            id_present = 1;
         }
 
         free_str_arr(row, idx);
@@ -404,8 +411,6 @@ int delete_values(char *cmd_arr[], int cmd_length)
     if (cmd_length - 4 != cnt)
     {
 
-        remove(temp_table);
-
         printf("Following ids are not exist in the table\n");
 
         for (int i = 4; i < cmd_length; i++)
@@ -415,17 +420,25 @@ int delete_values(char *cmd_arr[], int cmd_length)
                 printf("%d\n", atoi(cmd_arr[i]));
             }
         }
-        memset(arr, 0, siz);
+    }
 
-        return 0;
-    }
-    else
+    if (id_present)
     {
-        remove(original_table);
-        rename(temp_table, original_table);
-        memset(arr, 0, siz);
-        return 1;
+        printf("Following ids are successfully deleted\n");
+
+        for (int i = 4; i < cmd_length; i++)
+        {
+            if (arr[atoi(cmd_arr[i])] == 1)
+            {
+                printf("%d\n", atoi(cmd_arr[i]));
+            }
+        }
     }
+
+    remove(original_table);
+    rename(temp_table, original_table);
+    memset(arr, 0, siz);
+    return 1;
 }
 
 void display_table(char *cmd_arr[], int cmd_length)
@@ -519,32 +532,32 @@ int fetch(char *cmd_arr[], int cmd_length)
     int cnt = 0;
 
     Table *table = (Table *)malloc(sizeof(Table));
+   
     reflect_table(cmd_arr[1], cmd_arr[2], table);
-    int ok = 0, ok1 = 0;
+    int ok = 0;
+
+    int arr[siz];
+
+    memset(arr, 0, siz);
+
+
+    int anyone_present = 0;
     for (int i = 3; i < cmd_length; i++)
     {
         if (is_id_exists(table, atoi(cmd_arr[i])))
         {
+            arr[atoi(cmd_arr[i])] = 1;
+            anyone_present = 1;
             continue;
-        }
-        else if (ok1 == 0)
-        {
-            printf("Following ids are not exist in the table\n");
-            printf("%d\n", atoi(cmd_arr[i]));
-            ok1 = 1;
         }
         else
         {
-            printf("%d\n", atoi(cmd_arr[i]));
+
             ok = 1;
         }
     }
 
     free_table_struct(table);
-    if (ok == 1 || ok1 == 1)
-    {
-        return 0;
-    }
 
     char original_table[SIZE];
     make_table_path(cmd_arr[1], cmd_arr[2], original_table);
@@ -561,7 +574,7 @@ int fetch(char *cmd_arr[], int cmd_length)
         // the first row;
         char *row[SIZE];
         int idx = split_string(file_content, ",", row);
-        if (first_cnt == 0)
+        if (first_cnt == 0 && anyone_present)
         {
             last_len = ID_LEN + (idx - 1) * COL_LEN;
             row[idx - 1][strlen(row[idx - 1]) - 1] = '\0';
@@ -597,6 +610,20 @@ int fetch(char *cmd_arr[], int cmd_length)
     }
     free(file_content);
     fclose(src);
+
+    if (ok)
+    {
+        printf("Following ids are not exist in the table\n");
+
+        for (int i = 3; i < cmd_length; i++)
+        {
+            if (arr[atoi(cmd_arr[i])] == 0)
+            {
+                printf("%d\n", atoi(cmd_arr[i]));
+            }
+        }
+    }
+
 
     printf("\n");
 
