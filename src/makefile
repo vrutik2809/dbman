@@ -6,19 +6,16 @@ LIBS=-lm
 C_FLAGS=-I$(INCLUDE_DIR)
 DYNAMIC_LIB_NAME=libdbcore
 
-_DEPS = utils.h databases.h
+_DEPS = utils.h
 DEPS = $(patsubst %,$(INCLUDE_DIR)/%,$(_DEPS))
 
-_LIBOBJ = utils.o databases.o tables.o
+_LIBOBJ = utils.o tables.o
 LIBOBJ = $(patsubst %,$(OBJS_DIR)/%,$(_LIBOBJ))
-LIBSRC = utils.c databases.c tables.c
+LIBSRC = utils.c tables.c
 _APPOBJ = main.o
 APPOBJ = $(patsubst %,$(OBJS_DIR)/%,$(_APPOBJ))
 
 $(OBJS_DIR)/utils.o: utils.c
-	$(CC) -c -fPIC $< $(C_FLAGS) -o $@
-
-$(OBJS_DIR)/databases.o: databases.c
 	$(CC) -c -fPIC $< $(C_FLAGS) -o $@
 
 $(OBJS_DIR)/tables.o: tables.c
