@@ -26,3 +26,9 @@ This is CLI based linux application where user can use various functionality lik
 |`delete values <db_name> <table_name> <id>`|delete row of `id` from `<db_name>.<table_name>` table|<ul><li>database doesn't exist</li> <li>table doesn't exist</li> <li>id doesn't exist</li></ul>|
 |`man`|print manual for all commands|
 |`exit`|exit from the application|
+
+## Demo
+![first](https://user-images.githubusercontent.com/74986666/174778555-176eb8d0-963f-4ce1-8ed3-1bce6f78cd62.gif)
+![second](https://user-images.githubusercontent.com/74986666/174778597-49927a64-503a-416f-9487-08f31da262b0.gif)
+![third](https://user-images.githubusercontent.com/74986666/174778616-49d3c47a-1d8d-4be4-9406-77b17c9c7eb2.gif)
+
