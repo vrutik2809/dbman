@@ -28,7 +28,13 @@ This is CLI based linux application where user can use various functionality lik
 |`exit`|exit from the application|
 
 ## Demo
+### preview of make and create command
+
 ![first](https://user-images.githubusercontent.com/74986666/174778555-176eb8d0-963f-4ce1-8ed3-1bce6f78cd62.gif)
+### preview of insert and insert asynchronous command
+
 ![second](https://user-images.githubusercontent.com/74986666/174778597-49927a64-503a-416f-9487-08f31da262b0.gif)
+### preview of update and delete command
+
 ![third](https://user-images.githubusercontent.com/74986666/174778616-49d3c47a-1d8d-4be4-9406-77b17c9c7eb2.gif)
 
